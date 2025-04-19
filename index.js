@@ -161,6 +161,7 @@ socket.on("chat_request", (data) => {
 //  });
 
 socket.on("chat_astrologer", (data) => {
+  console.log("Received chat_rejected_astrologer event:", data);
   if (!data.room_id) {
     console.log("Error: Room ID is missing.");
     return;
