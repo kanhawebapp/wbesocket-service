@@ -28,7 +28,7 @@ const server = http.createServer(app);
 
 const io = socketIo(server, {
   cors: {
-    origin: "https://socket-chat-t3xo.onrender.com", 
+    origin: "https://socket-chat-7axx.onrender.com", 
     methods: ["GET", "POST"],
   },
 });
@@ -97,7 +97,7 @@ socket.on("chat_request", (data) => {
 
 
 
-console.log('hello');
+
 
 
     socket.emit("astrologer_busy", {
@@ -153,29 +153,23 @@ console.log('hello');
   // chat reject astrloger
 
   socket.on("chat_rejected_astrologer", (data) => {
+
     if (!data.room_id) {
       console.log("Error: Room ID is missing.");
       return;
     }
     const roomId = String(data.room_id);
-    socket.emit("chat_rejected", {
-      message: `Your astrologer has Reject your chat request!`,
-      status: "rejected",
-      roomid: roomId,
-    });
-    socket.broadcast.emit("chat_rejected", {
-      message: `Your astrologer has Reject your chat request!`,
-      status: "rejected",
-      roomid: roomId,
-    });
-
-        // socket.to(data.room_id).emit("chat_rejected", {
-        //   message: `Your astrologer has Reject your chat request!`,
-        //   status: "rejected",
-        // });
-
-     
-      });
+      socket.emit("chat_rejected", {
+          message: `Your astrologer has Reject your chat request!`,
+          status: "rejected",
+          roomid: roomId,
+        });
+    //  socket.broadcast.emit("chat_rejected", {
+    //       message: `Your astrologer has Reject your chat request!`,
+    //       status: "rejected",
+    //       roomid: roomId,
+    //     });
+ });
     
   
 
