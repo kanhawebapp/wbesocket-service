@@ -137,19 +137,7 @@ socket.on("chat_request", (data) => {
     
   
 
-  // end
-
-
-  
-  
-
-   
-
-
- 
-    
-  
-  
+  // end  
   // chat reject astrloger
 
   socket.on("chat_rejected_astrologer", (data) => {
@@ -165,11 +153,11 @@ socket.on("chat_request", (data) => {
           status: "rejected",
           roomid: roomId,
         });
-    //  socket.broadcast.emit("chat_rejected", {
-    //       message: `Your astrologer has Reject your chat request!`,
-    //       status: "rejected",
-    //       roomid: roomId,
-    //     });
+     socket.broadcast.emit("chat_rejected", {
+          message: `Your astrologer has Reject your chat request!`,
+          status: "rejected",
+          roomid: roomId,
+        });
  });
     
   
