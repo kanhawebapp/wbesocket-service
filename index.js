@@ -140,25 +140,50 @@ socket.on("chat_request", (data) => {
   // end  
   // chat reject astrloger
 
-  socket.on("chat_rejected_astrologer", (data) => {
+//   socket.on("chat_rejected_astrologer", (data) => {
 
-    console.log("Received chat_rejected_astrologer event:", data);
-    if (!data.room_id) {
-      console.log("Error: Room ID is missing.");
-      return;
-    }
-    const roomId = String(data.room_id);
-      socket.emit("chat_rejected", {
-          message: `Your astrologer has Reject your chat request!`,
-          status: "rejected",
-          roomid: roomId,
-        });
-     socket.broadcast.emit("chat_rejected", {
-          message: `Your astrologer has Reject your chat request!`,
-          status: "rejected",
-          roomid: roomId,
-        });
- });
+//     console.log("Received chat_rejected_astrologer event:", data);
+//     if (!data.room_id) {
+//       console.log("Error: Room ID is missing.");
+//       return;
+//     }
+//     const roomId = String(data.room_id);
+//       socket.emit("chat_rejected", {
+//           message: `Your astrologer has Reject your chat request!`,
+//           status: "rejected",
+//           roomid: roomId,
+//         });
+//     //  socket.broadcast.emit("chat_rejected", {
+//     //       message: `Your astrologer has Reject your chat request!`,
+//     //       status: "rejected",
+//     //       roomid: roomId,
+//     //     });
+//  });
+
+socket.on("chat_astrologer", (data) => {
+  if (!data.room_id) {
+    console.log("Error: Room ID is missing.");
+    return;
+  }
+
+  const roomId = String(data.room_id);
+  console.log("Rejecting chat for room:", roomId);
+
+  // Send to the astrologer/client themselves
+  socket.emit("chatrejected", {
+    message: `You have rejected the chat request.`,
+    status: "rejected",
+    roomid: roomId,
+  });
+
+  // Send to others in the same room
+  socket.to(roomId).emit("chatrejected", {
+    message: `Your astrologer has rejected your chat request!`,
+    status: "rejected",
+    roomid: roomId,
+  });
+});
+
     
   
 
