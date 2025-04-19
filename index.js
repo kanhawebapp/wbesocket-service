@@ -106,7 +106,7 @@ socket.on("chat_request", (data) => {
       status: "busy",
     });
 
- 
+
 
 
   });
@@ -134,59 +134,65 @@ socket.on("chat_request", (data) => {
         //   status: "Accepted",
         // });
       });
-    
-  
 
-  // end  
+
+
+  // end
+
+
+
+
+
+
+
+
+
+
+
+
   // chat reject astrloger
 
-//   socket.on("chat_rejected_astrologer", (data) => {
+  socket.on("chat_rejected_astrologer", (data) => {
 
-//     console.log("Received chat_rejected_astrologer event:", data);
-//     if (!data.room_id) {
-//       console.log("Error: Room ID is missing.");
-//       return;
-//     }
-//     const roomId = String(data.room_id);
-//       socket.emit("chat_rejected", {
-//           message: `Your astrologer has Reject your chat request!`,
-//           status: "rejected",
-//           roomid: roomId,
-//         });
-//     //  socket.broadcast.emit("chat_rejected", {
-//     //       message: `Your astrologer has Reject your chat request!`,
-//     //       status: "rejected",
-//     //       roomid: roomId,
-//     //     });
-//  });
+    if (!data.room_id) {
+      console.log("Error: Room ID is missing.");
+      return;
+    }
+    const roomId = String(data.room_id);
+      socket.emit("chat_rejected", {
+          message: `Your astrologer has Reject your chat request!`,
+          status: "rejected",
+          roomid: roomId,
+        });
+     socket.broadcast.emit("chat_rejected", {
+          message: `Your astrologer has Reject your chat request!`,
+          status: "rejected",
+          roomid: roomId,
+        });
+ });
 
-socket.on("chat_astrologer", (data) => {
-  console.log("Received chat_rejected_astrologer event:", data);
-  if (!data.room_id) {
-    console.log("Error: Room ID is missing.");
-    return;
-  }
 
-  const roomId = String(data.room_id);
-  console.log("Rejecting chat for room:", roomId);
 
-  // Send to the astrologer/client themselves
-  socket.emit("chatrejected", {
-    message: `You have rejected the chat request.`,
-    status: "rejected",
-    roomid: roomId,
-  });
+//  socket.on("chat_astrologer", (data) => {
 
-  // // Send to others in the same room
-  // socket.to(roomId).emit("chatrejected", {
-  //   message: `Your astrologer has rejected your chat request!`,
-  //   status: "rejected",
-  //   roomid: roomId,
-  // });
-});
+//   if (!data.room_id) {
+//     console.log("Error: Room ID is missing.");
+//     return;
+//   }
+//   const roomId = String(data.room_id);
+//     socket.emit("chatrejected", {
+//         message: `Your astrologer has Reject your chat request!`,
+//         status: "rejected",
+//         roomid: roomId,
+//       });
+//    socket.broadcast.emit("chatrejected", {
+//         message: `Your astrologer has Reject your chat request!`,
+//         status: "rejected",
+//         roomid: roomId,
+//       });
+// });
 
-    
-  
+
 
   // end reject
 
@@ -198,7 +204,7 @@ socket.on("chat_astrologer", (data) => {
       return;
     }
     const roomId = String(data.room_id);
-   
+
      socket.emit("chat_rejected_astrologer", {
           message: `Your User has Reject your chat request`,
           status: "rejected",
@@ -214,8 +220,8 @@ socket.on("chat_astrologer", (data) => {
         });
         // end
       });
-    
-  
+
+
 
   // end reject
 
@@ -239,8 +245,8 @@ socket.on("chat_astrologer", (data) => {
           roomid: roomId,
         });
       });
-    
-  
+
+
 
   // end
 
@@ -261,7 +267,7 @@ console.log('socket',socket.id);
 });
 
 
-  
+
 
 socket.on('send_message', (data) => {
   console.log('Received message:', data);
@@ -281,7 +287,7 @@ socket.on('send_message', (data) => {
   socket.on("autodisconnect", (data) => {
 
     console.log("Auto disconnect event received:",data.room_id);
-    
+
     if (data.room_id) {
        socket.broadcast.emit("chat_reject_auto", {
             message: `${data.room_id} has been automatically rejected after 1 minute.`,
@@ -289,13 +295,13 @@ socket.on('send_message', (data) => {
           });
           console.log(`Chat rejected for room ${data.room_id} after 1 minute`);
 
-       
+
         } else {
           console.log("Chat accepted or not enough time has passed.");
         }
-      
-      
-    
+
+
+
   });
 
   // typeing
@@ -315,7 +321,7 @@ socket.on('send_message', (data) => {
 
   socket.on("leave_chat", (data) => {
     const roomId = data.room_id;
-  
+
     console.log("Leaving chat room:", roomId);
     socket.broadcast.to(roomId).emit("leave_chat", {
       message: `User has left the ${roomId} chat.`,
@@ -334,7 +340,7 @@ socket.on('send_message', (data) => {
 
   socket.on("complted_chat", (data) => {
     const roomId = data.room_id;
-  
+
     console.log("Leaving chat room:", roomId);
     socket.broadcast.to(roomId).emit("complted_chat", {
       message: `User has left the ${roomId} chat.`,
