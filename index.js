@@ -177,12 +177,12 @@ socket.on("chat_astrologer", (data) => {
     roomid: roomId,
   });
 
-  // Send to others in the same room
-  socket.to(roomId).emit("chatrejected", {
-    message: `Your astrologer has rejected your chat request!`,
-    status: "rejected",
-    roomid: roomId,
-  });
+  // // Send to others in the same room
+  // socket.to(roomId).emit("chatrejected", {
+  //   message: `Your astrologer has rejected your chat request!`,
+  //   status: "rejected",
+  //   roomid: roomId,
+  // });
 });
 
     
