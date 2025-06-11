@@ -10,14 +10,14 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "axios": "^1.9.0",
     "cors": "^2.8.5",
-    "date-and-time": "^3.6.0",  
-    "express": "^4.21.2",    
+    "date-and-time": "^3.6.0",
+    "express": "^4.21.2",
     "mysql": "^2.18.1",
     "mysql2": "^3.13.0",
     "nodemon": "^3.1.9",
     "socket.io": "^4.8.1",
     "sql": "^0.78.0"
-   
   }
 }

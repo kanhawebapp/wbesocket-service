@@ -8,7 +8,7 @@ const cors = require("cors");
 const insertData = require("./chatapi/messageService");
 const completedchat=require("./chatapi/comChat");
 
-const db = require("./utils/database");
+
 
 const {
   markChatRejectedByAstrologer,
@@ -103,6 +103,9 @@ io.on("connection", (socket) => {
   // chat reject astrloger
 
   socket.on("chat_rejected_astrologer", async (data) => {
+
+
+    console.log("Received chat_rejected_astrologer event:", data);
     if (!data.room_id) {
       console.log("Error: Room ID is missing.");
       return;
