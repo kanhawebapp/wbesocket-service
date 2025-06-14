@@ -5,7 +5,7 @@ async function chat_reject(data) {
 
    
     try {
-        const URL = process.env.API_URL || 'https://chat.dhwaniastro.co.in/api';
+        const URL = 'https://chat.dhwaniastro.co.in/api';
         const response = await axios.post(`${URL}/chat/chat_reject_data`, data);
         return response.data;
     } catch (error) {
