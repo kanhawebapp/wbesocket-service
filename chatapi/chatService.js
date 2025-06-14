@@ -4,6 +4,7 @@ async function markChatRejectedByAstrologer(roomId,astroId) {
 
     
     try {
+      
         await db.query(
           `UPDATE users_details SET availability = 1 WHERE user_id = ?`,
           [astroId]

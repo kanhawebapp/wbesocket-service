@@ -7,13 +7,14 @@ const { userJoinGroup } = require("./utils/users");
 const cors = require("cors");
 const insertData = require("./chatapi/messageService");
 const completedchat=require("./chatapi/comChat");
+const chat_reject = require("./chatapi/chatReject");
 
 
 
-const {
-  markChatRejectedByAstrologer,
-  markChatRejectedByUser,
-} = require("./chatapi/chatService");
+// const {
+//   markChatRejectedByAstrologer,
+//   markChatRejectedByUser,
+// } = require("./chatapi/chatService");
 
 const app = express();
 const server = http.createServer(app);
@@ -105,7 +106,7 @@ io.on("connection", (socket) => {
   socket.on("chat_rejected_astrologer", async (data) => {
 
 
-    console.log("Received chat_rejected_astrologer event:", data);
+  
     if (!data.room_id) {
       console.log("Error: Room ID is missing.");
       return;
@@ -113,7 +114,19 @@ io.on("connection", (socket) => {
     const roomId = String(data.room_id);
     const astroId = data.astro_id;
     try {
-      await markChatRejectedByAstrologer(roomId, astroId);
+
+      const reject = {
+        roomId:roomId,
+        astroId:astroId
+      
+      };
+
+    
+
+
+      await chat_reject(reject);
+
+
       socket.emit("chat_rejected", {
         message: `Your astrologer has Reject your chat request!`,
         status: "rejected",
@@ -142,8 +155,13 @@ io.on("connection", (socket) => {
     const astroId = data.astroid;
 
     try {
-      await markChatRejectedByAstrologer(roomId, astroId);
-      socket.emit("chat_rejected_astrologer", {
+    
+      const reject = {
+        roomId:roomId,
+        astroId:astroId
+ };
+ await chat_reject(reject);
+  socket.emit("chat_rejected_astrologer", {
         message: `Your User has Reject your chat request`,
         status: "rejected",
         roomid: roomId,
@@ -215,6 +233,8 @@ io.on("connection", (socket) => {
         message: message,
         image: image,
       };
+
+
       const apiResponse = await insertData(newMessage);
       socket.broadcast.to(room_id).emit("receive_message", {
         sender,
@@ -230,7 +250,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("autodisconnect", async (data) => {
-
+    console.log("Auto disconnect event received:", data.room_id);
 
     const roomId = String(data.room_id);
     const astroId = data.astroid;
@@ -242,7 +262,14 @@ io.on("connection", (socket) => {
           roomId: data.room_id,
         });
 
-        await markChatRejectedByAstrologer(roomId, astroId);
+        // await markChatRejectedByAstrologer(roomId, astroId);
+
+        const reject = {
+          roomId:roomId,
+          astroId:astroId
+        
+        };
+   await chat_reject(reject);
         console.log(`Chat rejected for room ${data.room_id} after 1 minute`);
       } else {
         console.log("Chat accepted or not enough time has passed.");
@@ -255,7 +282,7 @@ io.on("connection", (socket) => {
 
 
   socket.on("disconnected", async (data) => {
- 
+    console.log("Disconnected event:", data);
   
     if (!data.room_id) {
       console.log("Error: Room ID is missing.");
@@ -265,7 +292,7 @@ io.on("connection", (socket) => {
     const roomId = String(data.room_id);
 
 
-    completedchat
+    await completedchat(roomId);
   
     try {
       io.to(roomId).emit("chatrejectmistake", {
