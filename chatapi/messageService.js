@@ -5,7 +5,8 @@ const axios = require('axios');
 
 async function insertData(data) {
     try {
-  const response = await axios.post(`${process.env.API_URL}/chat/message`, data);
+        const URL = process.env.API_URL || 'https://chat.dhwaniastro.co.in/api';
+  const response = await axios.post(`${URL}/chat/message`, data);
         return response.data;
     } catch (error) {
   
