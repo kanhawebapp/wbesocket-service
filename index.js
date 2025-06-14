@@ -230,7 +230,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("autodisconnect", async (data) => {
-    console.log("Auto disconnect event received:", data.room_id);
+
 
     const roomId = String(data.room_id);
     const astroId = data.astroid;
@@ -255,7 +255,7 @@ io.on("connection", (socket) => {
 
 
   socket.on("disconnected", async (data) => {
-    console.log("Disconnected event:", data);
+ 
   
     if (!data.room_id) {
       console.log("Error: Room ID is missing.");
