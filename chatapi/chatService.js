@@ -2,7 +2,7 @@ const db = require('../utils/database');;
 
 async function markChatRejectedByAstrologer(roomId,astroId) {
 
-    console.log('Marking chat rejected by astrologer', roomId, astroId);
+    
     try {
         await db.query(
           `UPDATE users_details SET availability = 1 WHERE user_id = ?`,
