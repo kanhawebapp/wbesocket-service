@@ -6,41 +6,18 @@ const date = require("date-and-time");
 const { userJoinGroup } = require("./utils/users");
 const cors = require("cors");
 const insertData = require("./chatapi/messageService");
-const completedchat=require("./chatapi/comChat");
+const completedchat = require("./chatapi/comChat");
 const chat_reject = require("./chatapi/chatReject");
-
-
-
-// const {
-//   markChatRejectedByAstrologer,
-//   markChatRejectedByUser,
-// } = require("./chatapi/chatService");
 
 const app = express();
 const server = http.createServer(app);
-
 const port = 8001;
-
-// app.use(
-//   cors({
-//     origin: "http://localhost:8000",
-//     methods: ["GET", "POST"],
-//   })
-// );
-
 const io = socketIo(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
   },
 });
-
-// const io = socketIo(server, {
-//   cors: {
-//     origin: "https://socket-chat-t3xo.onrender.com",
-//     methods: ["GET", "POST"],
-//   },
-// });
 
 const sentRequests = {};
 const requestCooldown = 1000;
@@ -104,9 +81,8 @@ io.on("connection", (socket) => {
   // chat reject astrloger
 
   socket.on("chat_rejected_astrologer", async (data) => {
+    console.log("text");
 
-
-  
     if (!data.room_id) {
       console.log("Error: Room ID is missing.");
       return;
@@ -114,18 +90,11 @@ io.on("connection", (socket) => {
     const roomId = String(data.room_id);
     const astroId = data.astro_id;
     try {
-
       const reject = {
-        roomId:roomId,
-        astroId:astroId
-      
+        roomId: roomId,
+        astroId: astroId,
       };
-
-    
-
-
       await chat_reject(reject);
-
 
       socket.emit("chat_rejected", {
         message: `Your astrologer has Reject your chat request!`,
@@ -152,16 +121,16 @@ io.on("connection", (socket) => {
     }
     const roomId = String(data.room_id);
 
-    const astroId = data.astroid;
+    const astroId = String(data.astroid);
 
     try {
-    
       const reject = {
-        roomId:roomId,
-        astroId:astroId
- };
- await chat_reject(reject);
-  socket.emit("chat_rejected_astrologer", {
+        roomId: roomId,
+        astroId: astroId,
+      };
+
+      await chat_reject(reject);
+      socket.emit("chat_rejected_astrologer", {
         message: `Your User has Reject your chat request`,
         status: "rejected",
         roomid: roomId,
@@ -234,7 +203,6 @@ io.on("connection", (socket) => {
         image: image,
       };
 
-
       const apiResponse = await insertData(newMessage);
       socket.broadcast.to(room_id).emit("receive_message", {
         sender,
@@ -250,26 +218,23 @@ io.on("connection", (socket) => {
   });
 
   socket.on("autodisconnect", async (data) => {
-    console.log("Auto disconnect event received:", data.room_id);
+    console.log("Auto disconnect event received:", data);
 
     const roomId = String(data.room_id);
-    const astroId = data.astroid;
+    const astroId = String(data.astroid);
 
     try {
-      if (data.room_id) {
+      const reject = {
+        roomId: roomId,
+        astroId: astroId,
+      };
+      await chat_reject(reject);
+      if (roomId) {
         socket.broadcast.emit("chat_reject_auto", {
           message: `${data.room_id} has been automatically rejected after 1 minute.`,
           roomId: data.room_id,
         });
 
-        // await markChatRejectedByAstrologer(roomId, astroId);
-
-        const reject = {
-          roomId:roomId,
-          astroId:astroId
-        
-        };
-   await chat_reject(reject);
         console.log(`Chat rejected for room ${data.room_id} after 1 minute`);
       } else {
         console.log("Chat accepted or not enough time has passed.");
@@ -277,23 +242,18 @@ io.on("connection", (socket) => {
     } catch (error) {}
   });
 
- 
-
-
-
   socket.on("disconnected", async (data) => {
     console.log("Disconnected event:", data);
-  
+
     if (!data.room_id) {
       console.log("Error: Room ID is missing.");
       return;
     }
-  
+
     const roomId = String(data.room_id);
 
-
-    await completedchat(roomId);
   
+
     try {
       io.to(roomId).emit("chatrejectmistake", {
         message: "Your astrologer has rejected your chat request!",
@@ -304,7 +264,6 @@ io.on("connection", (socket) => {
       console.error("Error emitting chatrejectmistake:", error);
     }
   });
-  
 
   // typeing
 
@@ -338,32 +297,57 @@ io.on("connection", (socket) => {
     socket.leave(roomId);
   });
 
-  socket.on("complted_chat", (data) => {
-    const roomId = data.room_id;
+  socket.on("complted_chat", async (data) => {
 
-    console.log("Leaving chat room:", roomId);
-    socket.broadcast.to(roomId).emit("complted_chat", {
-      message: `User has left the ${roomId} chat.`,
-      roomId: roomId,
-      status: "leave",
-    });
-    socket.emit("complted_chat", {
-      message: `You have left the ${roomId} chat.`,
-      roomId: roomId,
-      status: "leave",
-    });
-    socket.leave(roomId);
+    console.log("Leaving chat room:", data);
+ 
+try {
+const roomId = data.room_id;
+      const astro_Id = data.astroId;
+      const userId = data.userId;
+
+      const response= await completedchat({
+        roomId: roomId,
+        astroId: astro_Id,
+        user_id: userId,
+      });
+
+
+      
+
+ 
+socket.broadcast.to(roomId).emit("complted_chat", {
+        message: `User has left the ${roomId} chat.`,
+        roomId: roomId,
+        status: "leave",
+      });
+
+     
+      socket.emit("complted_chat", {
+        message: `You have left the ${roomId} chat.`,
+        roomId: roomId,
+        status: "leave",
+      });
+      socket.leave(roomId);
+      
+    } catch (error) {
+      
+    }
+ 
   });
 
   let disconnected = false;
 
   socket.on("disconnect", () => {
+
+
+    console.log("User disconnected:", socket.id);
+
     if (disconnected) return;
     disconnected = true;
 
     const roomId = socket.roomId;
-    console.log(`User ${socket.id} disconnected from room ${roomId}`);
-  if (roomId) {
+ if (roomId) {
       socket.to(roomId).emit("user_disconnected", {
         message: "A user has left the chat.",
         socketId: socket.id,
@@ -372,9 +356,6 @@ io.on("connection", (socket) => {
     }
   });
 });
-
-
-
 
 server.listen(port, () => {
   console.log(`Server started on port ${port}`);

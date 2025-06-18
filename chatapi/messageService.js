@@ -4,7 +4,9 @@ const axios = require('axios');
 
 
 async function insertData(data) {
-    const URL = 'https://chat.dhwaniastro.co.in/api';
+    const URL = 'https://chat.dhwaniastro.co.in/api'; 
+// const URL = 'http://localhost:8000/api'; 
+
     try {
  const response = await axios.post(`${URL}/chat/message`, data);
         return response.data;
