@@ -26,7 +26,7 @@ const REJECTION_TIMEOUT = 60000;
 
 io.on("connection", (socket) => {
   socket.on("chat_request", (data) => {
-    console.log("Received", data);
+    console.log("Received22", data);
     const userId = data.user_id;
     const astro_id = data.astro_id;
 
@@ -355,6 +355,34 @@ socket.broadcast.to(roomId).emit("complted_chat", {
       });
     }
   });
+
+// calling event
+
+
+socket.on("call_request", (data) => {
+  console.log("Received", data);
+  const userId = data.user_id;
+  const astro_id = data.astro_id;
+
+socket.broadcast.emit("new_call_request", {
+    message: "call request has been successfully sent",
+    userName: data.userName,
+    gender: data.gender,
+    dateofbirth: data.dateOfBirth,
+    timeOfBirth: data.timeOfBirth,
+    occupation: data.occupation,
+    location: data.location,
+    phoneNumber: data.phoneNumber,
+    astro_id: data.astro_id,
+    user_id: userId,
+    is_promotional: data.is_promotional,
+    room_id: data.room_id,
+    maximum_time: data.maximum_time,
+  });
+});
+
+
+
 });
 
 server.listen(port, () => {

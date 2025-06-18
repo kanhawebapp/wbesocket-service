@@ -1,11 +1,12 @@
 
 require('dotenv').config();
 const axios = require('axios');
+const url = require('./api');
+
 
 
 async function comchat(data) {
-    // const URL = 'http://127.0.0.1:8000/api'; 
-    const URL = 'https://chat.dhwaniastro.co.in/api'; 
+  const URL = url;
     try {
 
 const response = await axios.post(`${URL}/chat/completed`, data);
