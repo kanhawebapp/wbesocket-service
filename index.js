@@ -303,14 +303,14 @@ io.on("connection", (socket) => {
  
 try {
 const roomId = data.room_id;
-      const astro_Id = data.astroId;
-      const userId = data.userId;
+      // const astro_Id = data.astroId;
+      // const userId = data.userId;
 
-      const response= await completedchat({
-        roomId: roomId,
-        astroId: astro_Id,
-        user_id: userId,
-      });
+      // const response= await completedchat({
+      //   roomId: roomId,
+      //   astroId: astro_Id,
+      //   user_id: userId,
+      // });
 
 
       
