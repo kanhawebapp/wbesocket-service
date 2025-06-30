@@ -4,14 +4,20 @@ const socketIo = require("socket.io");
 
 const date = require("date-and-time");
 const { userJoinGroup } = require("./utils/users");
-const cors = require("cors");
+const cors = require('cors');
 const insertData = require("./chatapi/messageService");
 const completedchat = require("./chatapi/comChat");
 const chat_reject = require("./chatapi/chatReject");
 
+
+
+
 const app = express();
 const server = http.createServer(app);
 const port = 8001;
+
+
+
 const io = socketIo(server, {
   cors: {
     origin: "*",
@@ -19,13 +25,19 @@ const io = socketIo(server, {
   },
 });
 
+
+
+// end
+
 const sentRequests = {};
 const requestCooldown = 1000;
-const roomTimes = {};
-const REJECTION_TIMEOUT = 60000;
 
 io.on("connection", (socket) => {
+  console.log("Rec");
+
   socket.on("chat_request", (data) => {
+
+
     console.log("Received22", data);
     const userId = data.user_id;
     const astro_id = data.astro_id;
@@ -113,7 +125,7 @@ io.on("connection", (socket) => {
 
   // chat reject user
 
-  socket.on("chat_rejected_user", async (data) => {
+  socket.on("chat_rejected_user", async (data,callback) => {
     console.log("Received chat_rejected_user event:", data);
     if (!data.room_id) {
       console.log("Error: Room ID is missing.");
@@ -123,13 +135,15 @@ io.on("connection", (socket) => {
 
     const astroId = String(data.astroid);
 
+    if (callback) callback({ success: true, status: "rejected", });
+
     try {
       const reject = {
         roomId: roomId,
         astroId: astroId,
       };
-
       await chat_reject(reject);
+
       socket.emit("chat_rejected_astrologer", {
         message: `Your User has Reject your chat request`,
         status: "rejected",
@@ -381,6 +395,35 @@ socket.broadcast.emit("new_call_request", {
   });
 });
 
+
+// socket.on("customer_recharge", async (data) => {
+//   const { room_id } = data;
+// try {
+//  socket.to(room_id).emit("open_popup_astrologer", {
+//       message: `The user has been  the chat recharge.`,
+//       roomId: room_id,
+//  });
+// } catch (error) {
+//     console.error("Error while completing chat:", error);
+//   }
+// });
+
+
+
+// socket.on("customer_recharge_complted", async (data) => {
+
+//   console.log("data",data);;
+//   const { room_id,due_time } = data;
+// try {
+//  socket.to(room_id).emit("recharge_complted", {
+//       message: `The user has been  the chat recharge.`,
+//       roomId: room_id,
+//       duetime:due_time
+//  });
+// } catch (error) {
+//     console.error("Error while completing chat:", error);
+//   }
+// });
 
 
 });
