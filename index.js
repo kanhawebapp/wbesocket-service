@@ -213,7 +213,7 @@ socket.on("chat_request", (data) => {
       let date = DateTime.local();
       const { sender_id, room_id, received_id, message, sender, image } = data;
       const now = new Date();
-      const time = DateTime.local().toFormat("hh:mm:ss a");
+      const time = DateTime.now().setZone("Asia/Kolkata").toFormat("hh:mm:ss a");
        const newMessage = {
         user_id: sender_id,
         receiver_id: received_id,
