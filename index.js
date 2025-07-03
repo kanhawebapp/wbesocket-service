@@ -10,6 +10,7 @@ const chat_reject = require("./chatapi/chatReject");
 const { createOrder } = require("./controller/createPayment");
 const { verifyPayment } = require("./controller/verifyPayment");
 const autoChat = require("./chatapi/autoChat");
+const{ DateTime } = require('luxon');
 
 const app = express();
 const server = http.createServer(app);
@@ -209,10 +210,11 @@ socket.on("chat_request", (data) => {
 
   socket.on("send_message", async (data) => {
     try {
+      let date = DateTime.local();
       const { sender_id, room_id, received_id, message, sender, image } = data;
       const now = new Date();
-      const time = date.format(now, "HH:mm:ss A");
-      const newMessage = {
+      const time = DateTime.local().toFormat("hh:mm:ss a");
+       const newMessage = {
         user_id: sender_id,
         receiver_id: received_id,
         session_id: room_id,
