@@ -17,7 +17,7 @@ const server = http.createServer(app);
 const port = 8001;
 
 const corsOptions = {
-  origin: "http://localhost:8000",
+  origin: "http://chat.dhwaniastro.co.in",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
