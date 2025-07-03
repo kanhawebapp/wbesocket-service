@@ -320,13 +320,15 @@ socket.on("chat_request", (data) => {
     console.log("Leaving chat room:", data);
 
     try {
-      const roomId = data.room_id;
-     
+      // const roomId = data.room_id;
+      // const astro_Id = data.astroId;
+      // const userId = data.userId;
 
-      const response = await completedchat({
-        roomId: roomId,
-
-      });
+      // const response = await completedchat({
+      //   roomId: roomId,
+      //   astroId: astro_Id,
+      //   user_id: userId,
+      // });
 
       socket.broadcast.to(roomId).emit("complted_chat", {
         message: `User has left the ${roomId} chat.`,
