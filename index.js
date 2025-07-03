@@ -320,7 +320,7 @@ socket.on("chat_request", (data) => {
     console.log("Leaving chat room:", data);
 
     try {
-      // const roomId = data.room_id;
+      const roomId = data.room_id;
       // const astro_Id = data.astroId;
       // const userId = data.userId;
 
