@@ -324,11 +324,10 @@ socket.on("chat_request", (data) => {
       // const astro_Id = data.astroId;
       // const userId = data.userId;
 
-      // const response = await completedchat({
-      //   roomId: roomId,
-      //   astroId: astro_Id,
-      //   user_id: userId,
-      // });
+      const response = await completedchat({
+        roomId: roomId,
+       
+      });
 
       socket.broadcast.to(roomId).emit("complted_chat", {
         message: `User has left the ${roomId} chat.`,
