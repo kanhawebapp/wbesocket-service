@@ -45,21 +45,26 @@ const requestCooldown = 1000;
 
 io.on("connection", (socket) => {
 
-socket.on("chat_request", (data) => {
-  const userId = data.user_id;
-  const astro_id = data.astro_id;
-  const currentTimestamp = Date.now();
+  socket.on("chat_request", (data) => {
+    const userId = data.user_id;
+    const astro_id = data.astro_id;
+    const currentTimestamp = Date.now();
     roomTimes[data.room_id] = Date.now();
-    if (sentRequests[userId]) {
-      const timeElapsed = currentTimestamp - sentRequests[userId].timestamp;
-      if (timeElapsed < requestCooldown) {
+  if (sentRequests[userId] && sentRequests[userId][astro_id]) {
+      const timeElapsed = currentTimestamp - sentRequests[userId][astro_id].timestamp;
+   if (timeElapsed < requestCooldown) {
         return socket.emit("check_duplicate_request", {
-          message: `${data.userName}, you've already sent a chat request. Please wait a moment before trying again.`,
+          message: `${data.userName}, you've already sent a request to this astrologer. Please wait a moment before trying again.`,
         });
       }
+    } else {
+    if (!sentRequests[userId]) {
+        sentRequests[userId] = {}; 
+      }
+      sentRequests[userId][astro_id] = { timestamp: currentTimestamp };
     }
-    sentRequests[userId] = { timestamp: currentTimestamp };
-
+  
+    // Broadcast the chat request to other users (for example, to other astrologers or clients)
     socket.broadcast.emit("new_chat_request", {
       message: "Chat request has been successfully sent",
       userName: data.userName,
@@ -69,13 +74,14 @@ socket.on("chat_request", (data) => {
       occupation: data.occupation,
       location: data.location,
       phoneNumber: data.phoneNumber,
-      astro_id: data.astro_id,
+      astro_id: astro_id,
       user_id: userId,
       is_promotional: data.is_promotional,
       room_id: data.room_id,
       maximum_time: data.maximum_time,
     });
   });
+  
 
   socket.on("chat_accepted_astrologer", (data) => {
     console.log("Received chat_accepted_astrologer event:", data);
