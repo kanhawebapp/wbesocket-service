@@ -214,15 +214,15 @@ socket.on("chat_request", (data) => {
       const { sender_id, room_id, received_id, message, sender, image } = data;
       const now = new Date();
       const time = DateTime.now().setZone("Asia/Kolkata").toFormat("hh:mm:ss a");
-      //  const newMessage = {
-      //   user_id: sender_id,
-      //   receiver_id: received_id,
-      //   session_id: room_id,
-      //   message: message,
-      //   image: image,
-      // };
+       const newMessage = {
+        user_id: sender_id,
+        receiver_id: received_id,
+        session_id: room_id,
+        message: message,
+        image: image,
+      };
 
-      // const apiResponse = await insertData(newMessage);
+      const apiResponse = await insertData(newMessage);
 
 
       socket.broadcast.to(room_id).emit("receive_message", {
