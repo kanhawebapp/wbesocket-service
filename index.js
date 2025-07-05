@@ -40,43 +40,26 @@ app.post("/api/verify-Payment", verifyPayment);
 
 // end
 
-
-const requestCooldown = 1000; // 1 second cooldown time in milliseconds
-let sentRequests = {}; // Object to track user request timestamps
-let roomTimes = {};
+const sentRequests = {};
+const requestCooldown = 1000;
 
 io.on("connection", (socket) => {
 
-
-  socket.on("chat_request", (data) => {
-    const userId = data.user_id;
-    const astro_id = data.astro_id;
-    const currentTimestamp = Date.now(); // Get current timestamp
-    
-    // Track when the request is sent for this room
-    roomTimes[data.room_id] = currentTimestamp;
-    
-    // Check if the user has sent a request to this astrologer
-    if (sentRequests[userId] && sentRequests[userId][astro_id]) {
-      const timeElapsed = currentTimestamp - sentRequests[userId][astro_id].timestamp;
-  
-      // If the time elapsed is less than the cooldown period, reject the request
+socket.on("chat_request", (data) => {
+  const userId = data.user_id;
+  const astro_id = data.astro_id;
+  const currentTimestamp = Date.now();
+    roomTimes[data.room_id] = Date.now();
+    if (sentRequests[userId]) {
+      const timeElapsed = currentTimestamp - sentRequests[userId].timestamp;
       if (timeElapsed < requestCooldown) {
         return socket.emit("check_duplicate_request", {
-          message: `${data.userName}, you've already sent a request to this astrologer. Please wait a moment before trying again.`,
+          message: `${data.userName}, you've already sent a chat request. Please wait a moment before trying again.`,
         });
       }
-    } else {
-      // Initialize user record if not already present
-      if (!sentRequests[userId]) {
-        sentRequests[userId] = {}; 
-      }
-  
-      // Record the new request timestamp
-      sentRequests[userId][astro_id] = { timestamp: currentTimestamp };
     }
-  
-    // Broadcast the new chat request to all clients (excluding the sender)
+    sentRequests[userId] = { timestamp: currentTimestamp };
+
     socket.broadcast.emit("new_chat_request", {
       message: "Chat request has been successfully sent",
       userName: data.userName,
@@ -86,14 +69,13 @@ io.on("connection", (socket) => {
       occupation: data.occupation,
       location: data.location,
       phoneNumber: data.phoneNumber,
-      astro_id: astro_id,
+      astro_id: data.astro_id,
       user_id: userId,
       is_promotional: data.is_promotional,
       room_id: data.room_id,
       maximum_time: data.maximum_time,
     });
   });
-  
 
   socket.on("chat_accepted_astrologer", (data) => {
     console.log("Received chat_accepted_astrologer event:", data);
@@ -232,15 +214,15 @@ io.on("connection", (socket) => {
       const { sender_id, room_id, received_id, message, sender, image } = data;
       const now = new Date();
       const time = DateTime.now().setZone("Asia/Kolkata").toFormat("hh:mm:ss a");
-       const newMessage = {
-        user_id: sender_id,
-        receiver_id: received_id,
-        session_id: room_id,
-        message: message,
-        image: image,
-      };
+      //  const newMessage = {
+      //   user_id: sender_id,
+      //   receiver_id: received_id,
+      //   session_id: room_id,
+      //   message: message,
+      //   image: image,
+      // };
 
-      const apiResponse = await insertData(newMessage);
+      // const apiResponse = await insertData(newMessage);
 
 
       socket.broadcast.to(room_id).emit("receive_message", {
