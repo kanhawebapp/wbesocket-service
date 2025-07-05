@@ -17,7 +17,7 @@ const server = http.createServer(app);
 const port = 8001;
 
 const corsOptions = {
-  origin: "http://chat.dhwaniastro.co.in",
+  origin: "http://chat.dhwanaistro.co.in/",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
@@ -292,6 +292,9 @@ socket.on("chat_request", (data) => {
     socket.to(roomId).emit("typing", {
       typing: data.typing,
       user_name: data.user_name,
+      roomid:roomId
+
+
     });
   });
 
@@ -326,7 +329,7 @@ socket.on("chat_request", (data) => {
 
       const response = await completedchat({
         roomId: roomId,
-       
+    
       });
 
       socket.broadcast.to(roomId).emit("complted_chat", {
