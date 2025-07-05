@@ -40,31 +40,43 @@ app.post("/api/verify-Payment", verifyPayment);
 
 // end
 
-const sentRequests = {};
-const requestCooldown = 1000;
+
+const requestCooldown = 1000; // 1 second cooldown time in milliseconds
+let sentRequests = {}; // Object to track user request timestamps
+let roomTimes = {};
 
 io.on("connection", (socket) => {
+
 
   socket.on("chat_request", (data) => {
     const userId = data.user_id;
     const astro_id = data.astro_id;
-    const currentTimestamp = Date.now();
-    roomTimes[data.room_id] = Date.now();
-  if (sentRequests[userId] && sentRequests[userId][astro_id]) {
+    const currentTimestamp = Date.now(); // Get current timestamp
+    
+    // Track when the request is sent for this room
+    roomTimes[data.room_id] = currentTimestamp;
+    
+    // Check if the user has sent a request to this astrologer
+    if (sentRequests[userId] && sentRequests[userId][astro_id]) {
       const timeElapsed = currentTimestamp - sentRequests[userId][astro_id].timestamp;
-   if (timeElapsed < requestCooldown) {
+  
+      // If the time elapsed is less than the cooldown period, reject the request
+      if (timeElapsed < requestCooldown) {
         return socket.emit("check_duplicate_request", {
           message: `${data.userName}, you've already sent a request to this astrologer. Please wait a moment before trying again.`,
         });
       }
     } else {
-    if (!sentRequests[userId]) {
+      // Initialize user record if not already present
+      if (!sentRequests[userId]) {
         sentRequests[userId] = {}; 
       }
+  
+      // Record the new request timestamp
       sentRequests[userId][astro_id] = { timestamp: currentTimestamp };
     }
   
-    // Broadcast the chat request to other users (for example, to other astrologers or clients)
+    // Broadcast the new chat request to all clients (excluding the sender)
     socket.broadcast.emit("new_chat_request", {
       message: "Chat request has been successfully sent",
       userName: data.userName,
