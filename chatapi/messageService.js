@@ -1,7 +1,5 @@
-
-require('dotenv').config();
-const axios = require('axios');
-const url = require('./api');
+import axios from 'axios';
+import {url} from './api.js';
 
 
 
@@ -18,4 +16,5 @@ const URL = url;
     }
 }
 
-module.exports = insertData;
+
+export {insertData};

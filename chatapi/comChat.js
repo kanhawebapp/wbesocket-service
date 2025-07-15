@@ -1,11 +1,9 @@
 
-require('dotenv').config();
-const axios = require('axios');
-const url = require('./api');
+import axios from 'axios';
+import {url} from './api.js';
 
 
-
-async function comchat(data) {
+async function comChat(data) {
   const URL = url;
     try {
 
@@ -18,4 +16,5 @@ return response.data;
         throw error.response ? error.response.data : error;
     }
 }
-module.exports = comchat;
+
+export {comChat};

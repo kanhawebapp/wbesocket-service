@@ -1,9 +1,8 @@
 
-require('dotenv').config();
-const axios = require('axios');
-const url = require('./api');
+import axios from 'axios';
+import {url} from './api.js';
 
-async function chat_reject(data) {
+async function chatReject(data) {
 
     const URL = url; 
 
@@ -18,4 +17,5 @@ const response = await axios.post(`${URL}/chat/chat_reject_data`, data);
     }
 }
 
-module.exports = chat_reject;
+
+export {chatReject};
