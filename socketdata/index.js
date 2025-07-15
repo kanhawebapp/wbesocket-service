@@ -257,7 +257,7 @@ function socketHandler(io) {
           socket.broadcast.emit("chat_reject_auto", {
             message: `${data.room_id} has been automatically rejected after 1 minute.`,
             roomId: data.room_id,
-            status: "rejected",
+            status: "reject",
           });
 
           console.log(`Chat rejected for room ${data.room_id} after 1 minute`);
