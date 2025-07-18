@@ -35,6 +35,12 @@ app.use(Routes);
 
 socketHandler(io);
 
+
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the Chat Application API");
+});
+
 // API routes
 app.post("/api/create-order", createOrder);
 app.post("/api/verify-Payment", verifyPayment);
