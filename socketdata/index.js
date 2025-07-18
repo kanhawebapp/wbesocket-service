@@ -203,6 +203,23 @@ function socketHandler(io) {
           .setZone("Asia/Kolkata")
           .toFormat("hh:mm:ss a");
 
+          // socket.broadcast.to(room_id).emit("receive_message", {
+          //   sender,
+          //   sender_id,
+          //   received_id,
+          //   message,
+          //   time,
+          //   image,
+          // });
+
+        const response = await insert_message({
+          sender_id: sender_id,
+          received_id: received_id,
+          message: message,
+          image: image,
+          room_id: room_id,
+        });
+        if (response.status === true) {
           socket.broadcast.to(room_id).emit("receive_message", {
             sender,
             sender_id,
@@ -211,33 +228,16 @@ function socketHandler(io) {
             time,
             image,
           });
-
-        // const response = await insert_message({
-        //   sender_id: sender_id,
-        //   received_id: received_id,
-        //   message: message,
-        //   image: image,
-        //   room_id: room_id,
-        // });
-        // if (response.status === true) {
-        //   socket.broadcast.to(room_id).emit("receive_message", {
-        //     sender,
-        //     sender_id,
-        //     received_id,
-        //     message,
-        //     time,
-        //     image,
-        //   });
-        // } else {
-        //   socket.broadcast.to(room_id).emit("receive_message", {
-        //     sender,
-        //     sender_id,
-        //     received_id,
-        //     message,
-        //     time,
-        //     image,
-        //   });
-        // }
+        } else {
+          socket.broadcast.to(room_id).emit("receive_message", {
+            sender,
+            sender_id,
+            received_id,
+            message,
+            time,
+            image,
+          });
+        }
       } catch (error) {
         console.error("DB insert error:", error);
       }
@@ -260,7 +260,7 @@ function socketHandler(io) {
             status: "reject",
           });
 
-          console.log(`Chat rejected for room ${data.room_id} after 1 minute`);
+
         } else {
           console.log("Chat accepted or not enough time has passed.");
         }
