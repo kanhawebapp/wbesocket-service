@@ -21,7 +21,7 @@ const astroLocks = {};
 function socketHandler(io) {
   io.on("connection", (socket) => {
     socket.on("chat_request", async (data) => {
-      console.log("Received chat_request event:", data);
+    
       const userId = data.user_id;
       const astro_id = data.astro_id;
       const currentTimestamp = Date.now();
