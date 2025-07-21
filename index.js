@@ -8,6 +8,11 @@ import Routes from "./routes/index.js";
 import socketHandler from "./socketdata/index.js";
 
 
+
+import swaggerUi from 'swagger-ui-express';
+import swaggerFile from './swagger-output.json' assert { type: 'json' };
+
+
 import {createOrder} from "./controller/createPayment.js";
 import {verifyPayment} from "./controller/verifyPayment.js";
 
@@ -16,9 +21,8 @@ import {verifyPayment} from "./controller/verifyPayment.js";
 
 
 const app = express();
-
 const port = process.env.PORT || 8001;
-
+app.use('/uploads', express.static('uploads'));
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
@@ -27,6 +31,7 @@ const io = new Server(server, {
   },
 });
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors()); 
@@ -38,7 +43,7 @@ socketHandler(io);
 
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the Chat Application API");
+  res.send("Welcome to the Chat Application");
 });
 
 // API routes

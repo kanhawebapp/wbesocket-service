@@ -19,6 +19,7 @@ const astroLocks = {};
 function socketHandler(io) {
   io.on("connection", (socket) => {
     socket.on("chat_request", async (data) => {
+    
       const userId = data.user_id;
       const astro_id = data.astro_id;
       const currentTimestamp = Date.now();
@@ -48,12 +49,11 @@ function socketHandler(io) {
         is_promotional: data.is_promotional,
         room_id: data.room_id,
         maximum_time: data.maximum_time,
+        user_image: data.user_image,
       });
     });
 
     socket.on("chat_accepted_astrologer", (data) => {
-    
-
       if (!data.room_id) {
         console.log("Error: Room ID is missing.");
         return;
@@ -72,8 +72,6 @@ function socketHandler(io) {
     // chat reject astrloger
 
     socket.on("chat_rejected_astrologer", async (data) => {
-    
-
       if (!data.room_id) {
         return;
       }
@@ -104,7 +102,6 @@ function socketHandler(io) {
     // chat reject user
 
     socket.on("chat_rejected_user", async (data, callback) => {
-     
       if (!data.room_id) {
         return;
       }
@@ -177,7 +174,6 @@ function socketHandler(io) {
 
       socket.roomId = roomId;
 
-      
       socket.broadcast.to(roomId).emit("roomNotification", {
         message: `${data.username} has joined the chat.`,
       });
@@ -196,8 +192,6 @@ function socketHandler(io) {
         const time = DateTime.now()
           .setZone("Asia/Kolkata")
           .toFormat("hh:mm:ss a");
-
-     
 
         const response = await insert_message({
           sender_id: sender_id,
@@ -233,30 +227,27 @@ function socketHandler(io) {
     socket.on("autodisconnect", async (data) => {
       const roomId = String(data.room_id);
       const astroId = String(data.astroid);
-    
+
       try {
         const reject = {
           roomId: roomId,
           astroId: astroId,
         };
-      await chatReject(reject);
-    if (roomId) {
+        await chatReject(reject);
+        if (roomId) {
           socket.broadcast.emit("chat_reject_auto", {
             message: `${roomId} has been automatically rejected after 1 minute.`,
             roomId: roomId,
             status: "reject",
           });
-       socket.leave(roomId);
-         
+          socket.leave(roomId);
         } else {
           console.log("Chat accepted or not enough time has passed.");
         }
-    
       } catch (error) {
         console.error("Auto-disconnect error:", error);
       }
     });
-    
 
     socket.on("disconnected", async (data) => {
       if (!data.room_id) {
@@ -340,22 +331,19 @@ function socketHandler(io) {
     socket.on("disconnect", async () => {
       if (disconnected) return;
       disconnected = true;
-    
+
       const roomId = socket.roomId;
       if (roomId) {
-        
         await autoChat({ roomId: roomId });
         socket.to(roomId).emit("user_disconnected", {
           message: "A user has left the chat.",
           socketId: socket.id,
           roomId: roomId,
         });
-    
-      
+
         socket.leave(roomId);
       }
     });
-    
 
     // calling event
 

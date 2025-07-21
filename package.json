@@ -26,6 +26,10 @@
     "nodemon": "^3.1.9",
     "razorpay": "^2.9.6",
     "socket.io": "^4.8.1",
-    "sql": "^0.78.0"
+    "sql": "^0.78.0",
+    "swagger-auto-generate": "^1.0.9",
+    "swagger-autogen": "^2.23.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
