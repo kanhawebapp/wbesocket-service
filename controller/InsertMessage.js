@@ -31,6 +31,8 @@ const insert_message = async (data) => {
       user_id: parseInt(sender_id),
       receiver_id: parseInt(received_id),
       message: message,
+      msg_id: String(data.msg_id),
+      replyTo: data.replyTo || null,
       image: imageName || "",
       status: 1,
       session_id: room_id,

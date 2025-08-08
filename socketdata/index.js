@@ -184,7 +184,7 @@ async function socketHandler(io, pubClient, subClient) {
         console.log("----send_message--------"+JSON.stringify(data));
       try {
         let date = DateTime.local();
-        const { sender_id, room_id, received_id, message, sender, image } =
+        const { sender_id, room_id, received_id, message, sender, image,msg_id } =
           data;
         const now = new Date();
         const time = DateTime.now()
@@ -196,6 +196,7 @@ async function socketHandler(io, pubClient, subClient) {
           received_id: received_id,
           message: message,
           image: image,
+          msg_id:msg_id,
           room_id: room_id,
           replyTo: data.replyTo || null,
         });
@@ -205,6 +206,7 @@ async function socketHandler(io, pubClient, subClient) {
             sender_id,
             received_id,
             room_id: room_id,
+            msg_id,
             message,
             replyTo: data.replyTo || null,
             time,
@@ -217,6 +219,7 @@ async function socketHandler(io, pubClient, subClient) {
             sender_id,
             received_id,
             room_id: room_id,
+            msg_id,
             message,
             replyTo: data.replyTo || null,
             time,

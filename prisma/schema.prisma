@@ -19,14 +19,12 @@ model Message {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   user_id            Int      @default(0)
   receiver_id          Int
+  msg_id          String   
+  replyTo      Json? 
   message String 
   status            Int @default(1)
   image             String
   session_id String
    created_at     DateTime @default(now())
   updated_at     DateTime @default(now()) @updatedAt
-
-
- 
-
 }
