@@ -32,6 +32,7 @@ const insert_message = async (data) => {
       receiver_id: parseInt(received_id),
       message: message,
       msg_id: String(data.msg_id),
+      sender: String(data.sender),
       replyTo: data.replyTo || null,
       image: imageName || "",
       status: 1,

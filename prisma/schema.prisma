@@ -22,6 +22,7 @@ model Message {
   msg_id          String   
   replyTo      Json? 
   message String 
+  sender String 
   status            Int @default(1)
   image             String
   session_id String
