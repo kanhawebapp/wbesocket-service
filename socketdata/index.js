@@ -147,6 +147,7 @@ async function socketHandler(io, pubClient, subClient) {
         // Send message
         socket.on("send_message", async (data) => {
           try {
+            let sender = data.sender || "astrologer";
             logEvent("send_message", data);
             const time = DateTime.now().setZone("Asia/Kolkata").toFormat("hh:mm:ss a");
             await insert_message({
@@ -156,6 +157,7 @@ async function socketHandler(io, pubClient, subClient) {
               image: data.image,
               msg_id: data.msg_id,
               room_id: data.room_id,
+              sender:sender,
               replyTo: data.replyTo || null,
             });
             publish(pubClient, "messages", {

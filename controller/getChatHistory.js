@@ -3,7 +3,6 @@ import prisma from "../config/db.js";
 class getChatHistory {
   static async getChat_History(req, res) {
     const { session_id } = req.query;
-    console.log("Session ID----------comming in api-------:", session_id);
     if (!session_id) {
       return res.status(400).json({ message: "Session ID is required." });
     }
