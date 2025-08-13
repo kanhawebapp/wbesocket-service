@@ -11,54 +11,80 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { createOrder } from "./controller/createPayment.js";
 import { verifyPayment } from "./controller/verifyPayment.js";
+
 dotenv.config();
+
 const app = express();
 const port = process.env.PORT || 8001;
 const server = createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: "*", 
+    origin: "*", // Ideally replace "*" with your frontend domain for security
     methods: ["GET", "POST"],
   },
 });
 
+// Redis connections
 const pubClient = createClient({ url: process.env.REDIS_URL });
 const subClient = pubClient.duplicate();
 await pubClient.connect();
 await subClient.connect();
+io.adapter(createAdapter(pubClient, subClient));
+
+/**
+ * JWT authentication middleware for Socket.IO
+ */
+const jwtAuthMiddleware = (socket, next) => {
+  console.log("Auth payload:", socket.handshake.auth);
+  const token =
+    socket.handshake.auth?.token ||
+    socket.handshake.query?.token ||
+    socket.handshake.headers?.authorization?.split(" ")[1];
+
+  if (!token) {
+    return next(new Error("Authentication error: Token missing"));
+  }
+
+  jwt.verify(
+    token,
+    process.env.JWT_SECRET || "super_secret_key_123",
+    (err, decoded) => {
+      if (err) {
+        return next(new Error("Authentication error: Invalid token"));
+      }
+      socket.user = decoded;
+      console.log("Authenticated user-------------------------:", socket.user); 
+      next();
+    }
+  );
+};
+
+// Namespace for astrologer chat with JWT authentication
 const dhwaniNamespace = io.of("/dhwani-astro");
-// Attach handler
-socketHandler(dhwaniNamespace, pubClient, subClient); 
+dhwaniNamespace.use(jwtAuthMiddleware);
 
-io.use((socket, next) => {
-  console.log("Socket connection attempt:", socket.handshake.auth);
-  const token = socket.handshake.auth.token;
-  if (!token) return next(new Error("Authentication error: Token missing"));
-  jwt.verify(token, process.env.JWT_SECRET || "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0", (err, decoded) => {
-    if (err) return next(new Error("Authentication error: Invalid token"));
-    socket.user = decoded;
-    next();
-  });
-});
-
-
-socketHandler(io, pubClient, subClient);
+// Attach your socket handlers here
+socketHandler(dhwaniNamespace, pubClient, subClient);
 
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+// Routes
 app.use(Routes);
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile)); // Uncomment when swaggerFile is available
 
+// Payment APIs
+app.post("/api/create-order", createOrder);
+app.post("/api/verify-Payment", verifyPayment);
+
+// Root endpoint
 app.get("/", (req, res) => {
   res.send("Welcome to the Chat Application");
 });
 
-app.post("/api/create-order", createOrder);
-app.post("/api/verify-Payment", verifyPayment);
-
+// Start server
 server.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
