@@ -36,7 +36,6 @@ io.adapter(createAdapter(pubClient, subClient));
  * JWT authentication middleware for Socket.IO
  */
 const jwtAuthMiddleware = (socket, next) => {
-  console.log("Auth payload:", socket.handshake.auth);
   const token =
     socket.handshake.auth?.token ||
     socket.handshake.query?.token ||
@@ -54,7 +53,6 @@ const jwtAuthMiddleware = (socket, next) => {
         return next(new Error("Authentication error: Invalid token"));
       }
       socket.user = decoded;
-      console.log("Authenticated user-------------------------:", socket.user); 
       next();
     }
   );
