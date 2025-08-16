@@ -26,11 +26,22 @@ const io = new Server(server, {
 });
 
 // Redis connections
-const pubClient = createClient({ url: process.env.REDIS_URL });
+const pubClient = createClient({
+  username: process.env.REDIS_USERNAME || "default",
+  password: process.env.REDIS_PASSWORD,
+  socket: {
+    host: process.env.REDIS_HOST,
+    port: Number(process.env.REDIS_PORT),
+  },
+});
+
 const subClient = pubClient.duplicate();
+
 await pubClient.connect();
 await subClient.connect();
+
 io.adapter(createAdapter(pubClient, subClient));
+
 
 /**
  * JWT authentication middleware for Socket.IO
