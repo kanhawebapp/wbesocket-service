@@ -21,4 +21,5 @@ RUN npx prisma generate
 EXPOSE 10000
 
 # Start server
-CMD ["node", "index.js"]
+CMD ["sh", "-c", "npx prisma generate && node index.js"]
+
