@@ -47,6 +47,7 @@ io.adapter(createAdapter(pubClient, subClient));
  * JWT authentication middleware for Socket.IO
  */
 const jwtAuthMiddleware = (socket, next) => {
+  console.log("JWT Auth Middleware Invoked");
   const token =
     socket.handshake.auth?.token ||
     socket.handshake.query?.token ||
