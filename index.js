@@ -59,7 +59,7 @@ const jwtAuthMiddleware = (socket, next) => {
 
   jwt.verify(
     token,
-    process.env.JWT_SECRET || "super_secret_key_123",
+    process.env.JWT_SECRET ,
     (err, decoded) => {
       if (err) {
         return next(new Error("Authentication error: Invalid token"));
@@ -76,7 +76,7 @@ dhwaniNamespace.use(jwtAuthMiddleware);
 
 // Attach your socket handlers here
 socketHandler(dhwaniNamespace, pubClient, subClient);
-app.use("/uploads", express.static(process.env.UPLOADS_DIR || "uploads"));
+app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
