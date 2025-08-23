@@ -11,6 +11,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { createOrder } from "./controller/createPayment.js";
 import { verifyPayment } from "./controller/verifyPayment.js";
+import path from "path";
 
 dotenv.config();
 
@@ -76,7 +77,7 @@ dhwaniNamespace.use(jwtAuthMiddleware);
 
 // Attach your socket handlers here
 socketHandler(dhwaniNamespace, pubClient, subClient);
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
