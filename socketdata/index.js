@@ -56,7 +56,7 @@ const redisHandlers = (io) => ({
       io.to(data.room_id).emit("receive_message", data);
     } else if (data.sender === "Astrologer") {
       console.log("[messages handler] Emitting to room (Astrologer):", data.room_id);
-      io.to(data.room_id).emit("receive_message", data);
+     // io.to(data.room_id).emit("receive_message", data);
     } else {
       console.log("[messages handler] Unknown sender:", data.sender);
     }
