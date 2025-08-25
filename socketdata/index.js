@@ -50,16 +50,27 @@ const redisHandlers = (io) => ({
   },
 
   messages: (data) => {
-    if (data.sender === "user") io.to(data.room_id).emit("receive_message", data);
-    else if (data.sender === "Astrologer") {
-      console.log("------Astrologer  -----------"+Astrologer);
-      //io.to(data.room_id).emit("receive_message", data);
+    console.log("[messages handler] Received data:", data);
+    if (data.sender === "user") {
+      console.log("[messages handler] Emitting to room (user):", data.room_id);
+      io.to(data.room_id).emit("receive_message", data);
+    } else if (data.sender === "Astrologer") {
+      console.log("[messages handler] Emitting to room (Astrologer):", data.room_id);
+      io.to(data.room_id).emit("receive_message", data);
+    } else {
+      console.log("[messages handler] Unknown sender:", data.sender);
     }
   },
 
-  room_notification: (data) => io.to(data.roomid).emit("roomNotification", data),
+  room_notification: (data) => {
+    console.log("[room_notification handler] Emitting to room:", data.roomid, data);
+    io.to(data.roomid).emit("roomNotification", data);
+  },
 
-  user_typing: (data) => io.to(data.roomid).emit("typing", data),
+  user_typing: (data) => {
+    console.log("[user_typing handler] Emitting typing to room:", data.roomid, data);
+    io.to(data.roomid).emit("typing", data);
+  },
 
   end_chat_by_user: (data) => {
     io.to(data.roomId).emit("leave_chat", data);
