@@ -163,6 +163,7 @@ async function socketHandler(io, pubClient, subClient) {
             publish(pubClient, "messages", {
               ...data,
               time,
+              sender,
               replyTo: data.replyTo || null,
             });
           } catch (err) {
