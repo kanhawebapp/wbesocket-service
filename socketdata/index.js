@@ -51,6 +51,10 @@ const redisHandlers = (io) => ({
 
   messages: (data) => {
     if (data.sender === "user") io.to(data.room_id).emit("receive_message", data);
+    else if (data.sender === "Astrologer") {
+      console.log("------Astrologer  -----------"+Astrologer);
+      //io.to(data.room_id).emit("receive_message", data);
+    }
   },
 
   room_notification: (data) => io.to(data.roomid).emit("roomNotification", data),
