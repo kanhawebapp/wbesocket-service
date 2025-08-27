@@ -77,8 +77,8 @@ dhwaniNamespace.use(jwtAuthMiddleware);
 
 // Attach your socket handlers here
 socketHandler(dhwaniNamespace, pubClient, subClient);
-//app.use("/uploads", express.static(process.env.UPLOADS_DIR));
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/uploads", express.static(process.env.UPLOADS_DIR));
+//app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
