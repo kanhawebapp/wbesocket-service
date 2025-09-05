@@ -78,6 +78,7 @@ const redisHandlers = (io) => ({
   },
 
   user_disconnected: (data) => io.to(data.roomId).emit("user_disconnected", data),
+  chat_reject_auto: (data) => io.to(data.roomId).emit("chat_reject_auto", data),
 
   customer_recharge: (data) => io.to(data.roomId).emit("open_popup_astrologer", data),
 
@@ -96,6 +97,7 @@ async function socketHandler(io, pubClient, subClient) {
       "user_typing",
       "end_chat_by_user",
       "user_disconnected",
+      "chat_reject_auto",
       "customer_recharge",
       "customer_recharge_complted",
       "customer_recharge_fail",
