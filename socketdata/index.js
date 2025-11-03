@@ -34,6 +34,7 @@ function logEvent(event, data) {
 // ===== Redis Channel Handlers =====
 const redisHandlers = (io) => ({
   chat_requests: (data) => io.emit("new_chat_request", data),
+  chat_transfer: (data) => io.emit("chat_transfer", data),
 
   chat_status: (data) => {
     if (data.status === "Accepted" && data.who === "user") {
@@ -96,6 +97,7 @@ async function socketHandler(io, pubClient, subClient) {
       "messages",
       "user_typing",
       "end_chat_by_user",
+      "chat_transfer",
       "user_disconnected",
       "chat_reject_auto",
       "customer_recharge",
