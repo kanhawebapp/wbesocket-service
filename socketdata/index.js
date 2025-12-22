@@ -238,7 +238,7 @@ async function socketHandler(io, pubClient, subClient) {
           }
         });
 
-      socket.on("autodisconnect", async (data) => {
+      /*socket.on("autodisconnect", async (data) => {
           try {
             console.log("[Socket Event] autodisconnect", data);
             await autoChat({ roomId: data.room_id });
@@ -249,7 +249,7 @@ async function socketHandler(io, pubClient, subClient) {
           } catch (err) {
             console.error("[Socket Error] disconnect", err);
           }
-        });
+        });*/
 
         // Logout
         socket.on("logout", (data) => {
