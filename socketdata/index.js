@@ -236,24 +236,18 @@ async function socketHandler(io, pubClient, subClient) {
           }
         });
 
-        // Disconnect
-        // let disconnected = false;
-        // socket.on("disconnect", async () => {
-        //   console.log("-----------disconnect---------------------");
-        //   try {
-        //     if (disconnected) return;
-        //     disconnected = true;
-        //     if (socket.roomId) {
-        //      await autoChat({ roomId: socket.roomId });
-        //       socket.to(socket.roomId).emit("user_disconnected", { message: "A user has left the chat.", socketId: socket.id, roomId: socket.roomId });
-        //       publish(pubClient, "astrologer_disconnected", { message: "A user has left the chat.", socketId: socket.id, roomId: socket.roomId });
-        //       socket.leave(socket.roomId);
-              
-        //     }
-        //   } catch (err) {
-        //     console.error("[Socket Error] disconnect", err);
-        //   }
-        // });
+      
+        socket.on("autodisconnect", async (data) => {
+          try {
+            await autoChat({ roomId: data.room_id });
+            let roomId = data.room_id;
+            socket.to(roomId).emit("user_disconnected", { message: "A user has left the chat.", socketId: socket.id, roomId:roomId});
+            publish(pubClient, "astrologer_disconnected", { message: "Auto Disconnect Chat By Astrologer.", socketId: socket.id, roomId:roomId });
+            socket.leave(roomId);
+          } catch (err) {
+            console.error("[Socket Error] disconnect", err);
+          }
+        });
 
         // Logout
         socket.on("logout", (data) => {
