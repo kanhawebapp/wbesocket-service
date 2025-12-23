@@ -240,7 +240,7 @@ async function socketHandler(io, pubClient, subClient) {
         socket.on("autodisconnect", async (data) => {
           try {
             console.log("[Socket Event] autodisconnect", data);
-            await autoChat({ roomId: data.room_id });
+           // await autoChat({ roomId: data.room_id });
             let roomId = data.room_id;
             socket.to(roomId).emit("user_disconnected", { message: "A user has left the chat.", socketId: socket.id, roomId:roomId});
             publish(pubClient, "astrologer_disconnected", { message: "Auto Disconnect Chat By Astrologer.", socketId: socket.id, roomId:roomId });
