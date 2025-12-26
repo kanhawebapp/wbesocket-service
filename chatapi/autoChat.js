@@ -26,4 +26,4 @@ return response.data;
 }
 
 
-export {autoChat};
+export {autoChat,changeAutoChatStatus};

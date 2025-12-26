@@ -1,6 +1,6 @@
 import { insertData } from "../chatapi/messageService.js";
 import { chatReject } from "../chatapi/chatReject.js";
-import { autoChat } from "../chatapi/autoChat.js";
+import { autoChat,changeAutoChatStatus } from "../chatapi/autoChat.js";
 import { comChat } from "../chatapi/comChat.js";
 import { DateTime } from "luxon";
 import { insert_message } from "../controller/InsertMessage.js";
@@ -240,7 +240,7 @@ async function socketHandler(io, pubClient, subClient) {
         socket.on("autodisconnect", async (data) => {
           try {
             console.log("[Socket Event] autodisconnect", data);
-            await changeAutoChatStatus({ session_id: data.roomid,request_status: 0,astroid: data.astro_id });
+            await changeAutoChatStatus({ session_id: data.roomid,request_status: 4,astroid: data.astro_id });
             let roomId = data.room_id;
             socket.to(roomId).emit("user_disconnected", { message: "A user has left the chat.", socketId: socket.id, roomId:roomId});
             publish(pubClient, "astrologer_disconnected", { message: "Auto Disconnect Chat By Astrologer.", socketId: socket.id, roomId:roomId });
