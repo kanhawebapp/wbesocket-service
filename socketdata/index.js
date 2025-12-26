@@ -1,6 +1,6 @@
 import { insertData } from "../chatapi/messageService.js";
 import { chatReject } from "../chatapi/chatReject.js";
-import { autoChat } from "../chatapi/autoChat.js";
+import { autoChat,changeAutoChatStatus } from "../chatapi/autoChat.js";
 import { comChat } from "../chatapi/comChat.js";
 import { DateTime } from "luxon";
 import { insert_message } from "../controller/InsertMessage.js";
@@ -34,7 +34,6 @@ function logEvent(event, data) {
 // ===== Redis Channel Handlers =====
 const redisHandlers = (io) => ({
   chat_requests: (data) => io.emit("new_chat_request", data),
-  chat_transfer: (data) => io.emit("chat_transfer", data),
 
   chat_status: (data) => {
     if (data.status === "Accepted" && data.who === "user") {
@@ -97,7 +96,6 @@ async function socketHandler(io, pubClient, subClient) {
       "messages",
       "user_typing",
       "end_chat_by_user",
-      "chat_transfer",
       "user_disconnected",
       "chat_reject_auto",
       "customer_recharge",
@@ -238,10 +236,11 @@ async function socketHandler(io, pubClient, subClient) {
           }
         });
 
-      socket.on("autodisconnect", async (data) => {
+      
+        socket.on("autodisconnect", async (data) => {
           try {
             console.log("[Socket Event] autodisconnect", data);
-            //await autoChat({ roomId: data.room_id });
+            await changeAutoChatStatus({ session_id: data.room_id,request_status: 4,astroid: data.astro_id });
             let roomId = data.room_id;
             socket.to(roomId).emit("user_disconnected", { message: "A user has left the chat.", socketId: socket.id, roomId:roomId});
             publish(pubClient, "astrologer_disconnected", { message: "Auto Disconnect Chat By Astrologer.", socketId: socket.id, roomId:roomId });
