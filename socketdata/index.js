@@ -50,7 +50,7 @@ const redisHandlers = (io) => ({
   },
 
   messages: (data) => {
-    console.log("[messages handler] Received data:", data);
+    console.log("[messages handler] Receiveddd data:", data);
     if (data.sender === "user") {
       console.log("[messages handler] Emitting to room (user):", data.room_id);
       io.to(data.room_id).emit("receive_message", data);
