@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  websocket-service:
+    container_name: wbesocket-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dhwaniastro/wbesocket-service:latest
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8001:8001"
+    networks:
+      - dhwaniastro-net
+
+networks:
+  dhwaniastro-net:
+    driver: bridge
+
